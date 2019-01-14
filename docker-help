@@ -1,0 +1,219 @@
+---
+# docker engine = dockerimages + docker containers
+  # basic procedure for a docker container
+- docker images
+  docker pull ubuntu:latest
+  docker images
+
+- docker run -it ubuntu:latest /bin/bash
+
+- ps -elf
+
+- docker ps
+  docker exec -it inspiring_heyrovsky /bin/bash
+  docker ps
+
+- docker stop inspiring_heyrovsky
+  docker rm inspiring_heyrovsky
+  docker ps
+
+  # docker images commands
+- docker pull node:latest
+  docker images
+  
+- docker pull nginx:latest
+  docker pull nginx:1.12.0
+  docker pull nginx
+
+- docker pull node
+  docker inspect node
+
+- docker rmi f3068bc71556
+
+  # docker container commands
+- docker run -it ubuntu:latest /bin/bash
+  ps -ef
+  exit
+  docker ps -a
+
+- docker start ae141c80e436
+  docker ps
+  docker stop ae141c80e436
+  docker rm ae141c80e436
+
+- docker run -d --name newwebserver -p 8070:80 visualpath/devops-docker-ci
+  docker run -p 8080:8080 -p 50000:50000 -v /your/home:/var/jenkins_home Jenkins
+  docker inspect <image_name>
+
+# docker-files  (Buiding + shipping Images)
+Are saved with .df extension in docker-files drectory
+
+- docker buid -t friendlyhello 
+  docker images
+  docker run -p 4000:80 friendlyhello
+
+- open the url (or)curl http://localhost:4000
+
+- docker run -d -p 4000:80 friendlyhello
+  docker ps
+  docker stop 1fa4bcf395
+
+- docker login
+  docker tag image username/rposiory:tag
+  docker tag friendlyhello john/get-started:part1
+  docker images (or) docker images ls
+  docker push username/repository:tag
+
+- docker run -p 4000:80 username/repository
+  docker run -p 4000:80 john/get-started:part1
+
+- Dockerfile instructions
+  FROM:
+    FROM ubuntu:latest
+
+  MAINTAINER:
+    MAINTAINER <name>
+
+  RUN:
+    FROM ubuntu
+    RUN apt-get update update apt-get inistall php5
+
+  CMD:
+    CMD "echo" "Hello World!"
+
+  EXPOSE:
+    EXPOSE 6456
+  
+  ENV:
+    ENV var_home="/var/etc"
+
+  COPY:
+    COPY preconditions.txt /usr/temp
+
+  ADD:
+    ADD http://www.site.com/downloads/sample.tar.xz /usr/src
+
+  ENTRYPOINT:
+    CMD "Hello World!"
+    ENTRYPOINT echo
+
+  VOLUME:
+    VOLUME /data
+
+  USER:
+    USER daemon
+
+  WORKDIR
+    WORKDIR /user
+    WORKDIR home
+    RUN pwd
+
+  ONBUILD:
+    ONBUILD RUN rm -rf /usr/temp
+
+
+# docker-networking
+  # Container networking Basics
+- docker run -d -P nginx
+  docker ps
+  
+- curl localhost:32769
+    output:  
+      <!Doctype html><html>
+      <head>
+      <title>Welcome to nginx!</title>
+
+- docker run -d -p 80:80 nginx
+  docker run -d -p 8000:80 nginx
+  docker run -d -p 8080:80 -p 8888:80 nginx
+
+- docker inspect --format '{{
+  .NetworkSettings.IPAddress }}' <yourContainerID> 172.17.0.3
+
+- ping <ipAddress>
+    output:
+      64 bytes from <ipAddress>: icmp_req=1 ttl=64 time=0.085 ms 64bytes from
+
+  # Container Network Model
+  # docker networkin dev env
+- docker network create dev
+  docker network ls
+  docker run -d --nae search --net dev elastcsearch
+
+- docker run -ti --net dev alpine sh
+  ping search
+
+- docker run --net dev -d -P jpetazzo/trainingwheels
+  docker ps -l
+  
+- docker run --net dev --nae redis -d redis
+  docker rm -f redis
+  docker run --net dev --net alias redis -d redis
+
+  # docker network in prod
+- docker create network prod
+  docker run -d --name prod-es-l --net-alias search --not prod elasticsearch
+  docker run --net prod -rm alpine nslookup search Name: search
+
+- docker run --rm --net dev centos curl -s search:9200
+  output:
+    {
+      "name" : "Tarot",
+      ...
+    }
+
+- docker run --rm --net prod centos curl -s search:9200
+  output:
+    {
+      "name" : "Symbiote",
+      ...
+    }
+
+# local (On-premises) workflow of docker
+
+- docker run -dP jpetazzo/namer
+
+- git clone https://github.com/jpetazzo/namer
+  cd namer $ls -l company_name_generator.rbconfig.ru docker-compose.yml Dockerfile Gemfile
+
+- docker run -d -v $(pwd) : /src -p 80:9292 jpetazzo/namer
+
+- test:
+    docker ps
+
+- browse:
+    http://<yourHostIP>:80
+
+- modify ruby and browse
+
+- docker-compose up -d
+
+- debugging:
+    docker exec -it <yourContainerId> bash
+
+# docker compose ( Devolping Complex Stacks )
+YAML files are saved in docker compose
+
+- docker-compose --version
+  sudo pip install docker-compose  curl -L https://github.com/docker/compose/releases/download/1.8.0/docker-compose- 'uname -s'-'uname -m' > /usr/local/bin/docker-compose
+  chmod +x /usr/local/bin/docker-compose
+
+- cd
+  git clone git://github.com/jpetazzo/trainingwheels
+  ...
+  cd trainingwheels
+
+- docker-compose up
+
+# docker-compose commands
+
+- docker-compose build && docker-compose up
+  docker-compose up -d
+  docker-compose ps
+  docker-compose kill
+  docker-compose rm
+  docker-compose down
+
+
+
+ 
